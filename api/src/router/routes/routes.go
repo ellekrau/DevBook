@@ -20,4 +20,6 @@ func Configure(router *mux.Router) *mux.Router {
 	for _, route := range routes {
 		router.HandleFunc(route.URI, route.Function).Methods(route.Method)
 	}
+
+	return router
 }

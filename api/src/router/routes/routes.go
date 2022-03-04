@@ -2,8 +2,9 @@ package routes
 
 import "net/http"
 
+// Route represent all api routes
 type Route struct {
-	Uri                    string
+	URI                    string
 	Method                 string
 	Function               func(http.ResponseWriter, *http.Request)
 	RequiresAuthentication bool

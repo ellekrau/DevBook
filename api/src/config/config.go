@@ -10,15 +10,15 @@ import (
 )
 
 var (
-	// ConnectionString from database
-	ConnectionString = ""
+	// DbConnectionString from database
+	DbConnectionString = ""
 
 	// ApiPort application port
 	ApiPort = 0
 )
 
-func Load() {
-	// Load the .env variables to os.env
+// LoadEnviromentVariables load enviroment variables from .env file
+func LoadEnviromentVariables() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}
@@ -37,7 +37,7 @@ func loadApiConfiguration() {
 }
 
 func loadDbConfiguration() {
-	ConnectionString = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True?loc=Local",
+	DbConnectionString = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True?loc=Local",
 		getEnv("DB_USERNAME"),
 		getEnv("DB_PASSWORD"),
 		getEnv("DB_NAME"))

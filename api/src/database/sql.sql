@@ -1,4 +1,10 @@
 CREATE DATABASE IF NOT EXISTS devbook;
+
+USE mysql;
+
+CREATE USER IF NOT EXISTS 'devbook' IDENTIFIED BY 'devbook';
+GRANT ALL PRIVILEGES ON devbook.* TO 'devbook';
+
 USE devbook;
 
 DROP TABLE IF EXISTS users;

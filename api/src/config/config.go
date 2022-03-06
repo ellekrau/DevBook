@@ -37,7 +37,7 @@ func loadApiConfiguration() {
 }
 
 func loadDbConfiguration() {
-	DbConnectionString = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=True?loc=Local",
+	DbConnectionString = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=true&loc=Local",
 		getEnv("DB_USERNAME"),
 		getEnv("DB_PASSWORD"),
 		getEnv("DB_NAME"))

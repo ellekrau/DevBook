@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 // CreateUser create a new user in database
@@ -46,9 +47,26 @@ func CreateUser(rw http.ResponseWriter, r *http.Request) {
 	responses.JSON(rw, http.StatusOK, user)
 }
 
-// GetAllUsers get all users from database
-func GetAllUsers(rw http.ResponseWriter, r *http.Request) {
-	rw.WriteHeader(http.StatusNotImplemented)
+// GetUsers get users from database filtering by name or login
+func GetUsers(rw http.ResponseWriter, r *http.Request) {
+	nameOrLogin := strings.ToLower(r.URL.Query().Get("user"))
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(rw, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUserRepository(db)
+
+	users, err := repository.GetUsers(nameOrLogin)
+	if err != nil {
+		responses.Error(rw, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(rw, http.StatusOK, users)
 }
 
 // GetUserById use one ID to get an user from database

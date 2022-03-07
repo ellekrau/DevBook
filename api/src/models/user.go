@@ -14,7 +14,7 @@ import (
 type User struct {
 	ID        uint64    `json:"id,omitempty"`
 	Name      string    `json:"name,omitempty"`
-	Login     string    `json:"login,omitempty"`
+	Nickname  string    `json:"nickname,omitempty"`
 	Email     string    `json:"email,omitempty"`
 	Password  string    `json:"password,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
@@ -37,8 +37,8 @@ func (user *User) validate(httpMethod string) error {
 		return errors.New("name is required")
 	}
 
-	if user.Login == "" {
-		return errors.New("login is required")
+	if user.Nickname == "" {
+		return errors.New("nickname is required")
 	}
 
 	if user.Email == "" {
@@ -61,8 +61,8 @@ func (user *User) format(httpMethod string) error {
 	user.Name = strings.TrimSpace(user.Name)
 	user.Name = strings.Title(user.Name)
 
-	user.Login = strings.TrimSpace(user.Name)
-	user.Login = strings.ToLower(user.Login)
+	user.Nickname = strings.TrimSpace(user.Name)
+	user.Nickname = strings.ToLower(user.Nickname)
 
 	user.Email = strings.TrimSpace(user.Email)
 	user.Password = strings.TrimSpace(user.Name)

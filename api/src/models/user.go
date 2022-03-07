@@ -2,9 +2,12 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/badoux/checkmail"
 )
 
 // User represent an user in the app
@@ -22,6 +25,8 @@ func (user *User) Prepare(httpMethod string) error {
 	if err := user.validate(httpMethod); err != nil {
 		return err
 	}
+	fmt.Println(user)
+
 	user.format()
 
 	return nil
@@ -30,15 +35,19 @@ func (user *User) Prepare(httpMethod string) error {
 // validate makes the user fields validation
 func (user *User) validate(httpMethod string) error {
 	if user.Name == "" {
-		return errors.New("NAME is required")
+		return errors.New("name is required")
 	}
 
 	if user.Login == "" {
-		return errors.New("LOGIN is required")
+		return errors.New("login is required")
 	}
 
 	if user.Email == "" {
-		return errors.New("E-MAIL is required")
+		return errors.New("e-mail is required")
+	}
+
+	if err := checkmail.ValidateFormat(user.Email); err != nil {
+		return errors.New("e-mail with invalid format")
 	}
 
 	if user.Password == "" && httpMethod == http.MethodPost {
@@ -51,10 +60,11 @@ func (user *User) validate(httpMethod string) error {
 // format makes the user fiels formatation
 func (user *User) format() {
 	user.Name = strings.TrimSpace(user.Name)
+	user.Name = strings.Title(user.Name)
 
 	user.Login = strings.TrimSpace(user.Name)
 	user.Login = strings.ToLower(user.Login)
 
-	user.Email = strings.TrimSpace(user.Name)
+	user.Email = strings.TrimSpace(user.Email)
 	user.Password = strings.TrimSpace(user.Name)
 }

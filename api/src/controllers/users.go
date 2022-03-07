@@ -69,6 +69,11 @@ func GetUsers(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if len(users) < 1 {
+		responses.JSON(rw, http.StatusOK, nil)
+		return
+	}
+
 	responses.JSON(rw, http.StatusOK, users)
 }
 
@@ -92,6 +97,11 @@ func GetUserById(rw http.ResponseWriter, r *http.Request) {
 	user, err := repository.GetUserById(userID)
 	if err != nil {
 		responses.Error(rw, http.StatusInternalServerError, err)
+		return
+	}
+
+	if user.ID == 0 {
+		responses.JSON(rw, http.StatusOK, nil)
 		return
 	}
 
@@ -144,5 +154,26 @@ func UpdateUser(rw http.ResponseWriter, r *http.Request) {
 
 // DeleteUser delete an user
 func DeleteUser(rw http.ResponseWriter, r *http.Request) {
-	rw.WriteHeader(http.StatusNotImplemented)
+	parameters := mux.Vars(r)
+
+	userID, err := strconv.ParseUint(parameters["id"], 10, 64)
+	if err != nil {
+		responses.Error(rw, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := database.Connect()
+	if err != nil {
+		responses.Error(rw, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewUserRepository(db)
+	if err = repository.Deleteuser(userID); err != nil {
+		responses.Error(rw, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(rw, http.StatusNoContent, nil)
 }

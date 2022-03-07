@@ -8,8 +8,11 @@ import (
 	"net/http"
 )
 
-func main() {
+func init() {
 	config.LoadEnviromentVariables()
+}
+
+func main() {
 	router := router.GenerateRouter
 
 	fmt.Println("API is running in port:", config.ApiPort)

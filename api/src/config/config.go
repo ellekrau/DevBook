@@ -15,9 +15,12 @@ var (
 
 	// ApiPort application port
 	ApiPort = 0
+
+	// SecretKey is used to sign the jwt token
+	SecretKey []byte
 )
 
-// LoadEnviromentVariables load enviroment variables from .env file
+// LoadEnviromentVariables loads enviroment variables from .env file
 func LoadEnviromentVariables() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
@@ -25,8 +28,10 @@ func LoadEnviromentVariables() {
 
 	loadApiConfiguration()
 	loadDbConfiguration()
+	loadSecretKey()
 }
 
+// loadApiConfiguration loads the api configuration
 func loadApiConfiguration() {
 	var err error
 
@@ -36,6 +41,7 @@ func loadApiConfiguration() {
 	}
 }
 
+// loadDbConfiguration loads the DB configuration
 func loadDbConfiguration() {
 	DbConnectionString = fmt.Sprintf("%s:%s@/%s?charset=utf8&parseTime=true&loc=Local",
 		getEnv("DB_USERNAME"),
@@ -43,6 +49,12 @@ func loadDbConfiguration() {
 		getEnv("DB_NAME"))
 }
 
+// loadSecretKey loads the secret key
+func loadSecretKey() {
+	SecretKey = []byte(getEnv("SECRET_KEY"))
+}
+
+// getEnv returns the value of a variable in the env file
 func getEnv(key string) string {
 	value := os.Getenv(key)
 	if value == "" {

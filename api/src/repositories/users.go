@@ -38,6 +38,7 @@ func (repository userRepository) Create(user models.User) (uint64, error) {
 	return uint64(lastInsertedID), nil
 }
 
+// GetUsers get users in database filtering by name or login
 func (repository userRepository) GetUsers(nameOrLogin string) (users []models.User, err error) {
 	nameOrLogin = fmt.Sprintf("%%%s%%", nameOrLogin) //%nameOrLogin%
 
@@ -58,4 +59,39 @@ func (repository userRepository) GetUsers(nameOrLogin string) (users []models.Us
 	defer rows.Close()
 
 	return
+}
+
+// GetUserById use one ID to get an user from database
+func (repository userRepository) GetUserById(userID uint64) (user models.User, err error) {
+	row, err := repository.db.Query(
+		"SELECT id, name, login, email, createdAt FROM users WHERE id = ?", userID)
+	if err != nil {
+		return
+	}
+	defer row.Close()
+
+	user = models.User{}
+	if row.Next() {
+		if err = row.Scan(&user.ID, &user.Name, &user.Login, &user.Email, &user.CreatedAt); err != nil {
+			return
+		}
+	}
+
+	return
+}
+
+// UpdateUser update an user in database
+func (repository userRepository) UpdateUser(userID uint64, user models.User) error {
+	statement, err := repository.db.Prepare(
+		"UPDATE users SET name = ?, login = ?, email = ? WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err := statement.Exec(user.Name, user.Login, user.Email, userID); err != nil {
+		return err
+	}
+
+	return err
 }

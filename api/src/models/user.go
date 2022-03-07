@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"net/http"
 	"strings"
 	"time"
 )
@@ -13,12 +14,12 @@ type User struct {
 	Login     string    `json:"login,omitempty"`
 	Email     string    `json:"email,omitempty"`
 	Password  string    `json:"password,omitempty"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
 }
 
 // Prepare validate and format the received user
-func (user *User) Prepare() error {
-	if err := user.validate(); err != nil {
+func (user *User) Prepare(httpMethod string) error {
+	if err := user.validate(httpMethod); err != nil {
 		return err
 	}
 	user.format()
@@ -27,7 +28,7 @@ func (user *User) Prepare() error {
 }
 
 // validate makes the user fields validation
-func (user *User) validate() error {
+func (user *User) validate(httpMethod string) error {
 	if user.Name == "" {
 		return errors.New("NAME is required")
 	}
@@ -40,7 +41,7 @@ func (user *User) validate() error {
 		return errors.New("E-MAIL is required")
 	}
 
-	if user.Password == "" {
+	if user.Password == "" && httpMethod == http.MethodPost {
 		return errors.New("PASSWORD is required")
 	}
 

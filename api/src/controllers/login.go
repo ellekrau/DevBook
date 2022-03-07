@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"api/src/auth"
 	"api/src/controllers/responses"
 	"api/src/database"
 	"api/src/models"
@@ -46,5 +47,11 @@ func Login(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responses.JSON(rw, http.StatusOK, nil)
+	token, err := auth.CreateToken(dbUser.ID)
+	if err != nil {
+		responses.Error(rw, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(rw, http.StatusOK, []byte(token))
 }

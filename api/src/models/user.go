@@ -1,8 +1,8 @@
 package models
 
 import (
+	"api/src/security"
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -25,9 +25,8 @@ func (user *User) Prepare(httpMethod string) error {
 	if err := user.validate(httpMethod); err != nil {
 		return err
 	}
-	fmt.Println(user)
 
-	user.format()
+	user.format(httpMethod)
 
 	return nil
 }
@@ -58,7 +57,7 @@ func (user *User) validate(httpMethod string) error {
 }
 
 // format makes the user fiels formatation
-func (user *User) format() {
+func (user *User) format(httpMethod string) error {
 	user.Name = strings.TrimSpace(user.Name)
 	user.Name = strings.Title(user.Name)
 
@@ -67,4 +66,15 @@ func (user *User) format() {
 
 	user.Email = strings.TrimSpace(user.Email)
 	user.Password = strings.TrimSpace(user.Name)
+
+	if httpMethod == http.MethodPost {
+		hashPassword, err := security.Hash(user.Password)
+		if err != nil {
+			return err
+		}
+
+		user.Password = string(hashPassword)
+	}
+
+	return nil
 }

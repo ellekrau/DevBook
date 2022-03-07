@@ -50,7 +50,7 @@ func (user *User) validate(httpMethod string) error {
 	}
 
 	if user.Password == "" && httpMethod == http.MethodPost {
-		return errors.New("PASSWORD is required")
+		return errors.New("password is required")
 	}
 
 	return nil
@@ -65,7 +65,7 @@ func (user *User) format(httpMethod string) error {
 	user.Nickname = strings.ToLower(user.Nickname)
 
 	user.Email = strings.TrimSpace(user.Email)
-	user.Password = strings.TrimSpace(user.Name)
+	user.Password = strings.TrimSpace(user.Password)
 
 	if httpMethod == http.MethodPost {
 		hashPassword, err := security.Hash(user.Password)

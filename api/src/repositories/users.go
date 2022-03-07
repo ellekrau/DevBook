@@ -96,6 +96,7 @@ func (repository userRepository) UpdateUser(userID uint64, user models.User) err
 	return err
 }
 
+// DeleteUser delete an user from database
 func (repository userRepository) Deleteuser(userID uint64) error {
 	statement, err := repository.db.Prepare("DELETE FROM users WHERE id = ?")
 	if err != nil {
@@ -109,4 +110,21 @@ func (repository userRepository) Deleteuser(userID uint64) error {
 	}
 
 	return nil
+}
+
+// GetUserByEmail
+func (repository userRepository) GetUserByEmail(email string) (user models.User, err error) {
+	row, err := repository.db.Query("SELECT id, password FROM users WHERE email = ?", email)
+	if err != nil {
+		return
+	}
+	defer row.Close()
+
+	if row.Next() {
+		if err = row.Scan(&user.ID, &user.Password); err != nil {
+			return
+		}
+	}
+
+	return
 }

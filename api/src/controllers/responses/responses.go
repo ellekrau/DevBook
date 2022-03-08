@@ -18,5 +18,10 @@ func JSON(rw http.ResponseWriter, statusCode int, data interface{}) {
 }
 
 func Error(rw http.ResponseWriter, statusCode int, data error) {
-	JSON(rw, statusCode, struct{ Error string }{data.Error()})
+	if data != nil {
+		JSON(rw, statusCode, struct{ Error string }{data.Error()})
+		return
+	}
+
+	JSON(rw, statusCode, nil)
 }

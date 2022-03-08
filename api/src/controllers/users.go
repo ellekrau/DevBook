@@ -80,7 +80,7 @@ func GetUsers(rw http.ResponseWriter, r *http.Request) {
 // GetUserById use one ID to get an user
 func GetUserById(rw http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	userID, err := strconv.ParseUint(parameters["id"], 10, 64)
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
 	if err != nil {
 		responses.Error(rw, http.StatusBadRequest, err)
 		return
@@ -111,7 +111,7 @@ func GetUserById(rw http.ResponseWriter, r *http.Request) {
 // UpdateUser update an user
 func UpdateUser(rw http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
-	userID, err := strconv.ParseUint(parameters["id"], 10, 64)
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
 	if err != nil {
 		responses.Error(rw, http.StatusBadRequest, err)
 		return
@@ -156,7 +156,7 @@ func UpdateUser(rw http.ResponseWriter, r *http.Request) {
 func DeleteUser(rw http.ResponseWriter, r *http.Request) {
 	parameters := mux.Vars(r)
 
-	userID, err := strconv.ParseUint(parameters["id"], 10, 64)
+	userID, err := strconv.ParseUint(parameters["userID"], 10, 64)
 	if err != nil {
 		responses.Error(rw, http.StatusBadRequest, err)
 		return

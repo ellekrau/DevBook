@@ -53,5 +53,5 @@ func Login(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	responses.JSON(rw, http.StatusOK, []byte(token))
+	responses.JSON(rw, http.StatusOK, token)
 }

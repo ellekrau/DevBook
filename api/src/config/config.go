@@ -18,6 +18,8 @@ var (
 
 	// SecretKey is used to sign the jwt token
 	SecretKey []byte
+
+	TokenExpirationMinutes int = 0
 )
 
 // LoadEnviromentVariables loads enviroment variables from .env file
@@ -28,7 +30,7 @@ func LoadEnviromentVariables() {
 
 	loadApiConfiguration()
 	loadDbConfiguration()
-	loadSecretKey()
+	loadSecurityConfiguration()
 }
 
 // loadApiConfiguration loads the api configuration
@@ -49,9 +51,14 @@ func loadDbConfiguration() {
 		getEnv("DB_NAME"))
 }
 
-// loadSecretKey loads the secret key
-func loadSecretKey() {
+// loadSecurityConfiguration
+func loadSecurityConfiguration() {
 	SecretKey = []byte(getEnv("SECRET_KEY"))
+
+	var err error
+	if TokenExpirationMinutes, err = strconv.Atoi(getEnv("TOKEN_EXPIRATION_MINUTES")); err != nil {
+		log.Fatal(fmt.Sprintf("Error in parse enviroment variable TOKEN_EXPIRATION_MINUTES to int: %s", err.Error()))
+	}
 }
 
 // getEnv returns the value of a variable in the env file
